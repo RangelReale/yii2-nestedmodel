@@ -1,0 +1,22 @@
+{
+    "name": "RangelReale/yii2-nestedmodel",
+    "description": "Yii behavior for setting nested model attributes",
+    "keywords": ["yii2", "nested", "behavior", "model"],
+    "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Rangel Reale",
+            "email": "rangelspam@gmail.com"
+        }
+    ],
+    "type": "yii2-extension",
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "RangelReale\\nestedmodel\\": ""
+        }
+    }    
+}
