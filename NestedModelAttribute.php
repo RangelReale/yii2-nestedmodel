@@ -129,8 +129,6 @@ class NestedModelAttribute extends Object
 
     public function setValue($value)
     {
-        \Yii::trace('setValue: '.print_r($value, true));
-        
         if (is_null($value) || !is_array($value))
             return;
 

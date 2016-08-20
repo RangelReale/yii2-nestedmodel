@@ -132,6 +132,7 @@ class NestedModelBehavior extends Behavior
     
     public function canGetProperty($name, $checkVars = true)
     {
+        \Yii::trace('canGetProperty: '.$name, 'nestedmodel');
         if ($this->hasNestedModel($name)) {
             return true;
         }
@@ -146,6 +147,7 @@ class NestedModelBehavior extends Behavior
     
     public function canSetProperty($name, $checkVars = true)
     {
+        \Yii::trace('canSetProperty: '.$name, 'nestedmodel');
         if ($this->hasNestedModel($name)) {
             return true;
         }
@@ -154,6 +156,7 @@ class NestedModelBehavior extends Behavior
     
     public function __get($name)
     {
+        \Yii::trace('__get: '.$name, 'nestedmodel');
         if ($this->hasNestedModel($name)) {
             list($nested, $attr) = $this->parseNestedName($name);
             return $this->getNestedModel($nested)->getValueAttr($attr);
@@ -163,6 +166,7 @@ class NestedModelBehavior extends Behavior
     
     public function __set($name, $value)
     {
+        \Yii::trace('__set: '.$name.' = '.print_r($value, true), 'nestedmodel');
         if ($this->hasNestedModel($name)) {
             list($nested, $attr) = $this->parseNestedName($name);
             $this->getNestedModel($nested)->setValueAttr($value, $attr);

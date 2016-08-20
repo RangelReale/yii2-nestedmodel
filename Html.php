@@ -27,7 +27,7 @@ class Html extends BaseHtml
             $aname = explode('.', $name);
             $last = array_pop($aname);
             $curvalue = &$model;
-            foreach (explode('.', $name) as $a)
+            foreach ($aname as $a)
             {
                 if (is_array($curvalue))
                     $curvalue = &$curvalue[$a];
@@ -53,6 +53,8 @@ class Html extends BaseHtml
                 else
                     $attr .= '['.$a.']';
             }
+            \Yii::trace('getInputName: '.$attribute.' = '.$attr, 'nestedmodel');
+            
             $attribute = $attr;
         }
         return BaseHtml::getInputName($model, $attribute);
