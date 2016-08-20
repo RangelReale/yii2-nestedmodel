@@ -42,6 +42,11 @@ class NestedCollection extends \yii\base\Component implements \ArrayAccess, \Cou
     
     protected function uniqueId()
     {
+        return self::defaultUniqueId();
+    }
+    
+    public static function defaultUniqueId()
+    {
         return uniqid('nm'.rand(), false);
     }
 }
