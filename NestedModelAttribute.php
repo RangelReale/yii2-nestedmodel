@@ -146,7 +146,10 @@ class NestedModelAttribute extends Object
                 }
                 else
                 {
-                    $currentValue = [];
+                    if ($currentValue instanceof NestedModelCollection)
+                        $currentValue = new NestedModelCollection();
+                    else
+                        $currentValue = [];
                 }
             }
             

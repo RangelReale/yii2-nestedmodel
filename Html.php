@@ -11,7 +11,7 @@ class Html extends BaseHtml
         {
             foreach (explode('.', $name) as $a)
             {
-                if (is_array($curvalue))
+                if (is_array($curvalue) || $curvalue instanceof \ArrayAccess )
                     $curvalue = $curvalue[$a];
                 else
                     $curvalue = $curvalue->$a;
@@ -29,12 +29,12 @@ class Html extends BaseHtml
             $curvalue = &$model;
             foreach ($aname as $a)
             {
-                if (is_array($curvalue))
+                if (is_array($curvalue) || $curvalue instanceof \ArrayAccess )
                     $curvalue = &$curvalue[$a];
                 else
                     $curvalue = &$curvalue->$a;
             }
-            if (is_array($curvalue))
+            if (is_array($curvalue) || $curvalue instanceof \ArrayAccess )
                 $curvalue[$last] = $value;
             else
                 $curvalue->$last = $value;
