@@ -39,6 +39,11 @@ class NestedModelAttribute extends Object
     public $newItem = false;
 
     /**
+     * @var mixed|Closure($behavior, $targetRelation) returning cleared attribute value
+     */
+    public $clearItems;
+    
+    /**
      * @var Closure($behavior, $targetRelation)
      */
     public $clearBeforeSave;
@@ -48,16 +53,13 @@ class NestedModelAttribute extends Object
      */
     public $processSaveModel;
 
-    protected $_value;
+    protected $_changed = false;
 
     public function validate()
     {
-        if (!isset($this->_value))
-            return true;
-        
         $isValid = true;
         if ($this->isArray) {
-            foreach ($this->_value as $arrayIndex => $arrayItem) {
+            foreach ($this->behavior->owner->{$this->originalRelation} as $arrayIndex => $arrayItem) {
                 if (!$arrayItem->validate()) {
                     foreach ($arrayItem->getErrors() as $eattr => $evalue) {
                         foreach ($evalue as $eerror) {
@@ -68,8 +70,8 @@ class NestedModelAttribute extends Object
                 }
             }
         } else {
-            if (!$this->_value->validate()) {
-                foreach ($this->_value->getErrors() as $eattr => $evalue) {
+            if (!$this->behavior->owner->{$this->originalRelation}->validate()) {
+                foreach ($this->behavior->owner->{$this->originalRelation}->getErrors() as $eattr => $evalue) {
                     foreach ($evalue as $eerror) {
                         $this->behavior->owner->addError($this->targetRelation.'.'.$eattr, $eerror);
                     }
@@ -90,12 +92,12 @@ class NestedModelAttribute extends Object
             }
         }
 
-        if (!isset($this->_value))
+        if (!$this->_changed)
             return true;
         
         $isValid = true;
         if ($this->isArray) {
-            foreach ($this->_value as $arrayIndex => $arrayItem) {
+            foreach ($this->behavior->owner->{$this->originalRelation} as $arrayIndex => $arrayItem) {
                 if ($this->processSaveModel instanceof \Closure) {
                     call_user_func($this->processSaveModel, $this->behavior, $this->targetRelation, $arrayIndex, $arrayItem);
                 }
@@ -107,7 +109,7 @@ class NestedModelAttribute extends Object
             if ($this->processSaveModel instanceof \Closure) {
                 call_user_func($this->processSaveModel, $this->behavior, $this->targetRelation, null, $this->behavior->owner->{$this->originalRelation});
             }
-            if (!$this->_value->save())
+            if (!$this->behavior->owner->{$this->originalRelation}->save())
                 $isValid = false;
         }
         return $isValid;
@@ -115,10 +117,6 @@ class NestedModelAttribute extends Object
 
     public function getValue()
     {
-        if (isset($this->_value)) {
-            return $this->_value;
-        }
-        
         return $this->behavior->owner->{$this->originalRelation};
     }   
     
@@ -132,11 +130,24 @@ class NestedModelAttribute extends Object
         if (is_null($value) || !is_array($value))
             return;
 
-        $currentValue = isset($this->_value)?$this->_value:$this->behavior->owner->{$this->originalRelation};
+        $currentValue = $this->behavior->owner->{$this->originalRelation};
         
         if ($this->isArray) {
             if (is_null($currentValue) || $this->clearOnSet) {
-                $currentValue = [];
+                if ($this->clearItems instanceof \Closure) {
+                    $currentValue = call_user_func($this->clearItems, $this->behavior, $this->targetRelation);
+                }
+                elseif (isset($this->clearItems))
+                {
+                    if ($is_object($this->clearItems))
+                        $currentValue = clone $this->clearItems;
+                    else
+                        $currentValue = $this->clearItems;
+                }
+                else
+                {
+                    $currentValue = [];
+                }
             }
             
             foreach ($value as $vindex => $vvalue) {
@@ -161,7 +172,8 @@ class NestedModelAttribute extends Object
             $currentValue->setAttributes($vvalue);
         }        
         
-        $this->_value = $currentValue;
+        $this->behavior->owner->{$this->originalRelation} = $currentValue;
+        $this->_changed = true;
     }   
     
     public function setValueAttr($value, $attr = null)
@@ -170,16 +182,14 @@ class NestedModelAttribute extends Object
             $this->setValue($value);
             return;
         }
-        if (isset($this->_value))
-            $currentValue = &$this->_value;
-        else
-            $currentValue = &$this->behavior->owner->{$this->originalRelation};
+        $currentValue = &$this->behavior->owner->{$this->originalRelation};
         Html::setNestedAttributeValue($currentValue, $attr, $value);
+        $this->_changed = true;
     }
     
     public function reset()
     {
-        $this->_value = null;
+        $this->_changed = false;
     }
     
     protected function createNewItem($index = null)
