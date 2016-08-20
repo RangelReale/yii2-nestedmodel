@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\db\BaseActiveRecord;
 use yii\base\InvalidValueException;
 
-class NestedModelBehavior extends Behavior
+class NestedBehavior extends Behavior
 {
     /**
      * @var string
@@ -33,7 +33,7 @@ class NestedModelBehavior extends Behavior
     /**
      * @var array
      */
-    public $nestedModelConfig = ['class' => 'RangelReale\nestedmodel\NestedModelAttribute'];
+    public $nestedModelConfig = ['class' => 'RangelReale\nestedmodel\NestedAttribute'];
     
     /**
      * @var $NestedModelAttribute[]
@@ -95,7 +95,7 @@ class NestedModelBehavior extends Behavior
     {
         foreach (array_keys($this->nestedModelValues) as $targetRelation) {
             $value = $this->getNestedModel($targetRelation);
-            if ($value instanceof NestedModelAttribute && $this->owner->isAttributeSafe($targetRelation)) {
+            if ($value instanceof NestedAttribute && $this->owner->isAttributeSafe($targetRelation)) {
                 if (!$value->validate())
                     $event->isValid = false;
             }
@@ -110,7 +110,7 @@ class NestedModelBehavior extends Behavior
     {
         foreach (array_keys($this->nestedModelValues) as $targetRelation) {
             $value = $this->getNestedModel($targetRelation);
-            if ($value instanceof NestedModelAttribute) {
+            if ($value instanceof NestedAttribute) {
                 $value->reset();
             }
         }
@@ -124,7 +124,7 @@ class NestedModelBehavior extends Behavior
     {
         foreach (array_keys($this->nestedModelValues) as $targetRelation) {
             $value = $this->getNestedModel($targetRelation);
-            if ($value instanceof NestedModelAttribute && $this->owner->isAttributeSafe($targetRelation)) {
+            if ($value instanceof NestedAttribute && $this->owner->isAttributeSafe($targetRelation)) {
                 $value->save();
             }
         }

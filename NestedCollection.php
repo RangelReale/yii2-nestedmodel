@@ -2,7 +2,7 @@
 
 namespace RangelReale\nestedmodel;
 
-class NestedModelCollection extends \yii\base\Component implements \ArrayAccess, \Countable, \IteratorAggregate
+class NestedCollection extends \yii\base\Component implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     private $_data = [];
     

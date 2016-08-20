@@ -6,10 +6,10 @@ use yii\base\Object;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
-class NestedModelAttribute extends Object
+class NestedAttribute extends Object
 {
     /**
-     * @var NestedModelBehavior
+     * @var NestedBehavior
      */    
     public $behavior;
 
@@ -146,8 +146,8 @@ class NestedModelAttribute extends Object
                 }
                 else
                 {
-                    if ($currentValue instanceof NestedModelCollection)
-                        $currentValue = new NestedModelCollection();
+                    if ($currentValue instanceof NestedCollection)
+                        $currentValue = new NestedCollection();
                     else
                         $currentValue = [];
                 }

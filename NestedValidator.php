@@ -4,7 +4,7 @@ namespace RangelReale\nestedmodel;
 
 use yii\validators\Validator;
 
-class NestedModelValidator extends Validator
+class NestedValidator extends Validator
 {
     public function init()
     {
