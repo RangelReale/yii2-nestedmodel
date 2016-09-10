@@ -133,6 +133,11 @@ class NestedAttribute extends Object
         $currentValue = $this->behavior->owner->{$this->originalRelation};
         
         if ($this->isArray) {
+            // deletable marker
+            if (array_key_exists('_deletable', $value)) {
+                unset($value['_deletable']);
+            }
+            
             if (is_null($currentValue) || $this->clearOnSet) {
                 if ($this->clearItems instanceof \Closure) {
                     $currentValue = call_user_func($this->clearItems, $this->behavior, $this->targetRelation);
