@@ -2,11 +2,11 @@
 
 namespace RangelReale\nestedmodel;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
-class NestedAttribute extends Object
+class NestedAttribute extends BaseObject
 {
     /**
      * @var NestedBehavior
